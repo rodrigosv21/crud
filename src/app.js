@@ -5,6 +5,8 @@ const app = express();
 
 app.use(express.json()) //indicar para o express ler body com json
 
+
+//rotas
 app.get("/cadastros", CadastroController.index)
 
 app.get("/cadastros/:id", CadastroController.show)

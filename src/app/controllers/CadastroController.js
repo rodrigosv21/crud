@@ -1,64 +1,42 @@
-import conexao from '../database/conexao.js';
-
+import CadastroRepository from '../repositories/CadastroRepository.js';
 
 class CadastroController{
-    index (req, res) {
-        const sql = "SELECT * FROM cadastros;"
-        conexao.query(sql, (erro, resultado) =>{
-            if(erro){
-                res.status(404).json({'erro': erro})
-            }else{
-                res.status(200).json(resultado)
-            }
-        } )
-    }
-    show(req, res){
-        const id =req.params.id
-        const sql = "SELECT * FROM cadastros WHERE id=?;"
-        conexao.query(sql, id, (erro, resultado) =>{
-            const linha = resultado[0]
-            if(erro){
-                res.status(404).json({'erro': erro})
-            }else{
-                res.status(200).json(linha)
-            }
-        } )
-    }
-    store(req, res) {
-        const cadastro = req.body
-        const sql = "INSERT INTO cadastros SET ?;"
-        conexao.query(sql, cadastro, (erro, resultado) =>{
-            if(erro){
-                res.status(400).json({'erro': erro})
-            }else{
-                res.status(201).json(resultado)
-            }
-        } )
-    }
-    update(req, res) {
-        const id = req.params.id
-        const cadastro = req.body
-        const sql = "UPDATE cadastros SET ? WHERE ID=?;"
-        conexao.query(sql, [cadastro, id], (erro, resultado) =>{
-            if(erro){
-                res.status(400).json({'erro': erro})
-            }else{
-                res.status(200).json(resultado)
-            }
-        } )
-    }
-    delete(req, res) {
-        const id = req.params.id
-        const sql = "DELETE FROM cadastros WHERE id=?;"
-        conexao.query(sql, id, (erro, resultado) =>{
-            if(erro){
-                res.status(404).json({'erro': erro})
-            }else{
-                res.status(200).json(resultado)
-            }
-        } )
+
+    //listar os dados na tabela
+    async index (req, res) {
+        const row = await CadastroRepository.findAll();
+        res.json();
     }
 
+    //consultar por id
+    async show(req, res){
+        const id = req.params.id
+        const row = await CadastroRepository.findById(id)
+        res.json(row)
+    }
+
+    //adicionar novo
+    async store(req, res) {
+        const cadastro = req.body
+        const row = await CadastroRepository.create(cadastro)
+        res.json(row)
+        
+    }
+
+    //atualizar novo
+    async update(req, res) {
+        const id = req.params.id
+        const cadastro = req.body
+        const row = await CadastroRepository.update(cadastro, id)
+        res.json(row)
+    }
+
+    //detetar
+    async delete(req, res) {
+        const id = req.params.id
+        const row = await CadastroRepository.delete(id)
+        res.json(row)
+    }
 }
 
 export default new CadastroController()
